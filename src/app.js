@@ -10,9 +10,10 @@ connectDB();
 
 const app = express();
 
+// Rate limiting middleware
 const limiter = rateLimit({
-  windowMs: 1000, 
-  max: 60, 
+  windowMs: 1000, // 1 second
+  max: 60, // limit each IP to 60 requests per windowMs
   message: 'Too many requests from this IP, please try again later.'
 });
 
