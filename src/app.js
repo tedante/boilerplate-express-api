@@ -11,11 +11,12 @@ connectDB();
 
 const app = express();
 
-// Rate limiting middleware
 const limiter = rateLimit({
-  windowMs: 1000, // 1 second
-  max: 60, // limit each IP to 60 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
+  windowMs: 15 * 60 * 1000, // 15 minutes
+	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+	standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+	// store: ... , // Redis, Memcached, etc. See below.
 });
 
 app.use(limiter);
@@ -24,10 +25,8 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 
-// Handle 404 errors
 app.use(notFound);
 
-// Error handling middleware
 app.use(errorHandler);
 
 module.exports = app;
