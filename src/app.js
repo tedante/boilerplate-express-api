@@ -5,6 +5,9 @@ const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const { errorHandler, notFound } = require('./middlewares/errorMiddleware');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 
 dotenv.config();
 connectDB();
@@ -21,6 +24,9 @@ const limiter = rateLimit({
 
 app.use(limiter);
 app.use(cors());
+app.use(helmet());
+app.use(mongoSanitize());
+app.use(xss());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
